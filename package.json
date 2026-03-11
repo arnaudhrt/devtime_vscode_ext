@@ -3,7 +3,7 @@
   "displayName": "DevTime Local",
   "description": "Local-first coding time tracker",
   "icon": "devtime-logo.jpg",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "arnaudhrt",
   "repository": {
     "type": "git",

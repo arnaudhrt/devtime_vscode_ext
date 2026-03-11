@@ -7,6 +7,7 @@ const HEARTBEAT_INTERVAL = 30_000;
 const DEVTIME_DIR = path.join(os.homedir(), ".devtime");
 
 let heartbeatTimer: ReturnType<typeof setInterval> | undefined;
+let lastHeartbeatTs = 0;
 
 function getProject(): string {
   const folders = vscode.workspace.workspaceFolders;
@@ -14,10 +15,19 @@ function getProject(): string {
   return folders[0].name;
 }
 
+const LANGUAGE_NORMALIZE: Record<string, string> = {
+  "go.mod": "go",
+  "go.sum": "go",
+  "go.work": "go",
+  "go.asm": "go",
+  "gotmpl": "go",
+};
+
 function getLanguage(): string {
   const editor = vscode.window.activeTextEditor;
   if (!editor) return "unknown";
-  return editor.document.languageId;
+  const id = editor.document.languageId;
+  return LANGUAGE_NORMALIZE[id] ?? id;
 }
 
 function hasContext(): boolean {
@@ -58,13 +68,18 @@ function writeEvent(eventType: "heartbeat" | "focus" | "blur"): void {
   }
 }
 
+function sendHeartbeat(): void {
+  const now = Date.now();
+  if (now - lastHeartbeatTs < HEARTBEAT_INTERVAL) return;
+  if (vscode.window.activeTextEditor && hasContext()) {
+    lastHeartbeatTs = now;
+    writeEvent("heartbeat");
+  }
+}
+
 function startHeartbeat(): void {
   stopHeartbeat();
-  heartbeatTimer = setInterval(() => {
-    if (vscode.window.activeTextEditor && hasContext()) {
-      writeEvent("heartbeat");
-    }
-  }, HEARTBEAT_INTERVAL);
+  heartbeatTimer = setInterval(sendHeartbeat, HEARTBEAT_INTERVAL);
 }
 
 function stopHeartbeat(): void {
@@ -83,11 +98,7 @@ export function activate(context: vscode.ExtensionContext): void {
   startHeartbeat();
 
   context.subscriptions.push(
-    vscode.window.onDidChangeActiveTextEditor((editor) => {
-      if (editor && hasContext()) {
-        writeEvent("heartbeat");
-      }
-    }),
+    vscode.window.onDidChangeActiveTextEditor(() => sendHeartbeat()),
   );
 
   context.subscriptions.push(
@@ -107,11 +118,7 @@ export function activate(context: vscode.ExtensionContext): void {
   );
 
   context.subscriptions.push(
-    vscode.workspace.onDidOpenTextDocument(() => {
-      if (hasContext()) {
-        writeEvent("heartbeat");
-      }
-    }),
+    vscode.workspace.onDidOpenTextDocument(() => sendHeartbeat()),
   );
 }
 
