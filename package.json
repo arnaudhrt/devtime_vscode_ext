@@ -1,8 +1,14 @@
 {
-  "name": "devtime-vscode",
-  "displayName": "devtime",
+  "name": "devtime-local",
+  "displayName": "DevTime Local",
   "description": "Local-first coding time tracker",
+  "icon": "devtime-logo.jpg",
   "version": "0.0.1",
+  "publisher": "arnaudhrt",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arnaudhrt/devtime_vscode_ext.git"
+  },
   "engines": {
     "vscode": "^1.80.0"
   },
