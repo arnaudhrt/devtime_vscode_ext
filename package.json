@@ -2,7 +2,7 @@
   "name": "devtime-local",
   "displayName": "DevTime Local",
   "description": "Local-first coding time tracker",
-  "icon": "devtime-logo.jpg",
+  "icon": "devtime-logo.png",
   "version": "0.0.3",
   "publisher": "arnaudhrt",
   "repository": {
