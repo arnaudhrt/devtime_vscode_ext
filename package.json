@@ -3,7 +3,7 @@
   "displayName": "DevTime Local",
   "description": "Local-first coding time tracker",
   "icon": "devtime-logo.jpg",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "arnaudhrt",
   "repository": {
     "type": "git",
@@ -30,6 +30,6 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "type": "commonjs"
 }
